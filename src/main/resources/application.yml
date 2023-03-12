@@ -1,0 +1,12 @@
+server:
+  port: 8087
+
+## URL Rest Services applicacion
+coins:
+  baseURL: 'api/coins'
+  healthAPI: '/health-api'
+
+## Url Coin Gecko RestService
+api:
+  urlCoinGecko: 'https://api.coingecko.com/api/v3'
+  ping: '/ping'
