@@ -1,5 +1,7 @@
 package ar.com.api.indexes.router;
 
+import java.net.URL;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +23,9 @@ public class ApiRouter {
 
  @Value("${coins.indexesApi}") 
  private String URL_INDEXES_GECKO_API;
+
+ @Value("${coins.indexesListApi}") 
+ private String URL_INDEXES_LIST_GECKO_API;
  
  @Bean
  public RouterFunction<ServerResponse> route(IndexesApiHandler handler) {
@@ -32,7 +37,9 @@ public class ApiRouter {
             .GET(URL_SERVICE_API + URL_INDEXES_GECKO_API, 
                     RequestPredicates.accept(MediaType.APPLICATION_JSON),
                     handler::getListIndexesMarketParameters
-                    )                        
+                    )
+             .GET(URL_SERVICE_API + URL_INDEXES_LIST_GECKO_API,
+                        handler::getListMarketIndexesOnlyMarketIdAndIndexId)
             .build();
 
  }

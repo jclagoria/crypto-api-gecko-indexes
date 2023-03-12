@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import ar.com.api.indexes.dto.IndexesFilterDTO;
 import ar.com.api.indexes.model.Indexes;
+import ar.com.api.indexes.model.MarketBase;
 import ar.com.api.indexes.model.Ping;
 import ar.com.api.indexes.services.CoinGeckoServiceStatus;
 import ar.com.api.indexes.services.IndexesCoinGeckoApiService;
@@ -38,7 +39,7 @@ public class IndexesApiHandler {
 
  public Mono<ServerResponse> getListIndexesMarketParameters(ServerRequest sRequest){
 
-     log.info("In getListIndexesMarket");
+     log.info("In getListIndexesMarketParameters");
 
      Optional<Integer> perPageOpt = Optional.empty();
      Optional<Integer> pageOpt = Optional.empty();
@@ -75,6 +76,16 @@ public class IndexesApiHandler {
                          serviceIndexes.getListMarketIndexesParameters(filterDTO),
                           Indexes.class
                           );
+ }
+
+ public Mono<ServerResponse> getListMarketIndexesOnlyMarketIdAndIndexId(ServerRequest sRequest) {
+
+     log.info("In getListIndexesMarketParameters");
+
+     return ServerResponse
+                    .ok()
+                    .body(
+                         serviceIndexes.getListMarketIndexOnlyMarketIdAndIndexId(), MarketBase.class);
  }
 
 }

@@ -6,6 +6,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import ar.com.api.indexes.dto.IndexesFilterDTO;
 import ar.com.api.indexes.model.Indexes;
+import ar.com.api.indexes.model.MarketBase;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 
@@ -15,6 +16,9 @@ public class IndexesCoinGeckoApiService {
 
  @Value("${api.indexesApi}")
  private String URL_API_INDEXES;
+
+ @Value("${api.indexesListApi}")
+ private String URL_API_INDEXES_LIST;
 
  private WebClient webClient;
 
@@ -35,6 +39,20 @@ public class IndexesCoinGeckoApiService {
               .bodyToFlux(Indexes.class)
               .doOnError(throwable -> log.error("The service is unavailable!", throwable))
               .onErrorComplete();
+ }
+
+ public Flux<MarketBase> getListMarketIndexOnlyMarketIdAndIndexId() {
+
+  log.info("In service getListMarketIndexOnlyMarketIdAndIndexId " 
+           + URL_API_INDEXES_LIST);
+  
+  return webClient
+             .get()
+             .uri(URL_API_INDEXES_LIST)
+             .retrieve()
+             .bodyToFlux(MarketBase.class)
+             .doOnError(throwable -> log.error("The service is unavailable!", throwable))
+             .onErrorComplete();
  }
  
 }
