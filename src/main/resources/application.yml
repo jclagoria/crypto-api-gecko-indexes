@@ -5,8 +5,10 @@ server:
 coins:
   baseURL: 'api/coins'
   healthAPI: '/health-api'
+  indexesApi: '/indexes'
 
 ## Url Coin Gecko RestService
 api:
   urlCoinGecko: 'https://api.coingecko.com/api/v3'
   ping: '/ping'
+  indexesApi: '/indexes'
