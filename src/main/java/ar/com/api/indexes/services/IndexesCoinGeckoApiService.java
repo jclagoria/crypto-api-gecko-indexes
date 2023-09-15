@@ -1,6 +1,8 @@
 package ar.com.api.indexes.services;
 
+import ar.com.api.indexes.exception.external.ManageExceptionCoinGeckoServiceApi;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -12,7 +14,7 @@ import reactor.core.publisher.Flux;
 
 @Service
 @Slf4j
-public class IndexesCoinGeckoApiService {
+public class IndexesCoinGeckoApiService extends CoinGeckoServiceApi {
 
  @Value("${api.indexesApi}")
  private String URL_API_INDEXES;
@@ -33,12 +35,21 @@ public class IndexesCoinGeckoApiService {
            + filterDTO.getUrlFilterString());
 
   return webClient
-              .get()
-              .uri(URL_API_INDEXES + filterDTO.getUrlFilterString())
-              .retrieve()
-              .bodyToFlux(Indexes.class)
-              .doOnError(throwable -> log.error("The service is unavailable!", throwable))
-              .onErrorComplete();
+          .get()
+          .uri(URL_API_INDEXES + filterDTO.getUrlFilterString())
+          .retrieve()
+          .onStatus(
+                  HttpStatusCode::is4xxClientError,
+                  getClientResponseMonoDataException()
+          )
+          .onStatus(
+                  HttpStatusCode::is5xxServerError,
+                  getClientResponseMonoServerException()
+          )
+          .bodyToFlux(Indexes.class)
+          .doOnError(
+                  ManageExceptionCoinGeckoServiceApi::throwServiceException
+          );
  }
 
  public Flux<MarketBase> getListMarketIndexOnlyMarketIdAndIndexId() {
@@ -47,12 +58,21 @@ public class IndexesCoinGeckoApiService {
            + URL_API_INDEXES_LIST);
   
   return webClient
-             .get()
-             .uri(URL_API_INDEXES_LIST)
-             .retrieve()
-             .bodyToFlux(MarketBase.class)
-             .doOnError(throwable -> log.error("The service is unavailable!", throwable))
-             .onErrorComplete();
+          .get()
+          .uri(URL_API_INDEXES_LIST)
+          .retrieve()
+          .onStatus(
+                  HttpStatusCode::is4xxClientError,
+                  getClientResponseMonoDataException()
+          )
+          .onStatus(
+                  HttpStatusCode::is5xxServerError,
+                  getClientResponseMonoServerException()
+          )
+          .bodyToFlux(MarketBase.class)
+          .doOnError(
+                  ManageExceptionCoinGeckoServiceApi::throwServiceException
+          );
  }
  
 }
